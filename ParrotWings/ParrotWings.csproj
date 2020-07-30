@@ -1,0 +1,122 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
+    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <IsPackable>false</IsPackable>
+    <SpaRoot>ClientApp\</SpaRoot>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Content Remove="$(SpaRoot)**" />
+    <None Remove="$(SpaRoot)**" />
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="ClientApp\tsconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="ClientApp\src\components\containers\Header.tsx" />
+    <None Remove="ClientApp\src\components\containers\LeftMenu.tsx" />
+    <None Remove="ClientApp\src\components\containers\MainLayout.tsx" />
+    <None Remove="ClientApp\src\components\pages\CreateTransaction.tsx" />
+    <None Remove="ClientApp\src\components\pages\CreateTransaction\AmountStep.tsx" />
+    <None Remove="ClientApp\src\components\pages\CreateTransaction\ConfirmStep.tsx" />
+    <None Remove="ClientApp\src\components\pages\CreateTransaction\RecipientStep.tsx" />
+    <None Remove="ClientApp\src\components\pages\CreateTransaction\SuccessStep.tsx" />
+    <None Remove="ClientApp\src\components\pages\Home\TransactionItem.tsx" />
+    <None Remove="ClientApp\src\components\pages\Login.tsx" />
+    <None Remove="ClientApp\src\components\pages\LoginRoute.tsx" />
+    <None Remove="ClientApp\src\components\pages\Register.tsx" />
+    <None Remove="ClientApp\src\components\pages\Register\CompleteMessage.tsx" />
+    <None Remove="ClientApp\src\components\pages\Register\RegisterForm.tsx" />
+    <None Remove="ClientApp\src\store\account\actionCreators.ts" />
+    <None Remove="ClientApp\src\store\account\actions.ts" />
+    <None Remove="ClientApp\src\store\account\reducers.ts" />
+    <None Remove="ClientApp\src\store\account\types.ts" />
+    <None Remove="ClientApp\src\store\transaction\actionCreators.ts" />
+    <None Remove="ClientApp\src\store\transaction\actions.ts" />
+    <None Remove="ClientApp\src\store\transaction\reducers.ts" />
+    <None Remove="ClientApp\src\store\transaction\types.ts" />
+    <None Remove="ClientApp\src\store\user\actionCreators.tsx" />
+    <None Remove="ClientApp\src\store\user\actions.tsx" />
+    <None Remove="ClientApp\src\store\user\reducers.tsx" />
+    <None Remove="ClientApp\src\store\user\types.tsx" />
+    <None Remove="ClientApp\src\utils\serverApi.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ParrotWings.Data\ParrotWings.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\components\containers\LeftMenu.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\containers\MainLayout.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\containers\Header.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\pages\CreateTransaction.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\pages\CreateTransaction\AmountStep.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\pages\CreateTransaction\ConfirmStep.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\pages\CreateTransaction\RecipientStep.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\pages\CreateTransaction\SuccessStep.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\pages\Home\TransactionItem.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\pages\Login.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\LoginRoute.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\pages\Register.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\pages\Register\CompleteMessage.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\pages\Register\RegisterForm.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\components\ProtectedRoute.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\store\account\actionCreators.ts" />
+    <TypeScriptCompile Include="ClientApp\src\store\account\actions.ts" />
+    <TypeScriptCompile Include="ClientApp\src\store\account\reducers.ts" />
+    <TypeScriptCompile Include="ClientApp\src\store\account\types.ts" />
+    <TypeScriptCompile Include="ClientApp\src\store\transaction\actionCreators.ts" />
+    <TypeScriptCompile Include="ClientApp\src\store\transaction\actions.ts" />
+    <TypeScriptCompile Include="ClientApp\src\store\transaction\reducers.ts" />
+    <TypeScriptCompile Include="ClientApp\src\store\transaction\types.ts" />
+    <TypeScriptCompile Include="ClientApp\src\store\user\actionCreators.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\store\user\actions.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\store\user\reducers.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\store\user\types.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\utils\serverApi.ts" />
+  </ItemGroup>
+
+  <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
+    <!-- Ensure Node.js is installed -->
+    <Exec Command="node --version" ContinueOnError="true">
+      <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+    </Exec>
+    <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+    <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+  </Target>
+
+  <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+    <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+
+    <!-- Include the newly-built files in the publish output -->
+    <ItemGroup>
+      <DistFiles Include="$(SpaRoot)build\**; $(SpaRoot)build-ssr\**" />
+      <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+        <RelativePath>%(DistFiles.Identity)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
+
+</Project>
