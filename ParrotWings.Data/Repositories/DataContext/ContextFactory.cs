@@ -4,7 +4,7 @@ namespace ParrotWings.Data.Repositories.DataContext
 {
     public class ContextFactory : IContextFactory
     {
-        private readonly DbContextOptions<ApplicationDbContext> options;
+        protected readonly DbContextOptions<ApplicationDbContext> options;
 
         public ContextFactory(DbContextOptions<ApplicationDbContext> options)
         {

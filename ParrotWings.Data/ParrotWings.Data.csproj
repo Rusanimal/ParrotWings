@@ -9,6 +9,8 @@
     <Compile Remove="Migrations\20200725105027_InitDb.Designer.cs" />
     <Compile Remove="Migrations\20200727162819_InitDb.cs" />
     <Compile Remove="Migrations\20200727162819_InitDb.Designer.cs" />
+    <Compile Remove="Migrations\20200729094852_InitDb.cs" />
+    <Compile Remove="Migrations\20200729094852_InitDb.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +21,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4" />
   </ItemGroup>
 
 </Project>

@@ -13,6 +13,7 @@ using ParrotWings.Data.Profiles;
 using ParrotWings.Data.Repositories;
 using ParrotWings.Data.Repositories.DataContext;
 using ParrotWings.Data.Repositories.Interfaces;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -30,8 +31,9 @@ namespace ParrotWings
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(connectionString));
             services.AddAutoMapper(typeof(UserProfile));
             services.AddControllersWithViews();
 

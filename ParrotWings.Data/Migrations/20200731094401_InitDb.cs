@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ParrotWings.Data.Migrations
 {
@@ -12,7 +13,7 @@ namespace ParrotWings.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     Email = table.Column<string>(maxLength: 50, nullable: false),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
@@ -28,7 +29,7 @@ namespace ParrotWings.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     RecipientId = table.Column<int>(nullable: true),
                     SenderId = table.Column<int>(nullable: true)
@@ -55,7 +56,7 @@ namespace ParrotWings.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(20, 2)", nullable: false),
                     TransferTransactionId = table.Column<int>(nullable: true),
