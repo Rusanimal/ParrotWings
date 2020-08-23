@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ParrotWings.Data\ParrotWings.Data.csproj" />
+    <ProjectReference Include="..\ParrotWings\ParrotWings.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using AutoFixture.Xunit2;
-using Moq;
+﻿using Moq;
 using ParrotWings.Data.Entities;
 using ParrotWings.Data.Repositories;
 using ParrotWings.Data.Repositories.DataContext;
@@ -27,22 +26,22 @@ namespace ParrotWings.Tests.Data.Repositories
 
         }
 
-        [Fact]
-        public async Task GetBalance_Success()
+        [Theory]
+        [AutoMoqData]
+        public async Task GetBalance_Success(Balance balance1, Balance balance2, Balance balance3)
         {
-            var data = new List<Balance>
-            {
-                new Balance { Amount = 1, UserId = 1 },
-                new Balance { Amount = 0, UserId = 1 },
-                new Balance { Amount = 29, UserId = 1 }
-            };
+            balance2.UserId = balance1.UserId;
+            balance2.User = balance1.User;
+            balance3.UserId = balance1.UserId;
+            balance3.User = balance1.User;
+            var data = new List<Balance> { balance1, balance2, balance3 };
 
             context.Balances.AddRange(data);
             await context.SaveChangesAsync();
 
-            var result = await _repository.GetBalance(1);
+            var result = await _repository.GetBalance(balance1.UserId);
 
-            Assert.True(result == 30);
+            Assert.True(result == data.Sum(c => c.Amount));
         }
 
         [Fact]
