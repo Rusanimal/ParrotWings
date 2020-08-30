@@ -37,15 +37,10 @@ namespace ParrotWings.Tests.Extensions
         public void GetUserId_Exception()
         {
             var principal = _mockPrincipal.Object;
-            try
-            {
-                var result = principal.Identity.GetUserId();
-            }
-            catch (Exception ex)
-            {
-                Assert.True(ex is ArgumentNullException);
-                Assert.True(ex.Message.Equals("Value cannot be null. (Parameter 'identity')"));
-            }
+
+            var exp = Assert.Throws<ArgumentNullException>(() => principal.Identity.GetUserId());
+
+            Assert.True(exp.Message.Equals("Value cannot be null. (Parameter 'identity')"));
         }
 
         [Fact]

@@ -9,11 +9,8 @@ using ParrotWings.Data.Managers.Interfaces;
 using ParrotWings.Data.Models;
 using ParrotWings.Tests.FakeFactories;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Security.Claims;
-using System.Security.Principal;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -48,11 +45,13 @@ namespace ParrotWings.Tests.Controllers
         [AutoMoqData]
         public async Task Register_Success(RegistrationModel model)
         {
-            _userManager.Setup(c => c.GetUserByEmail(It.IsAny<string>())).ReturnsAsync((UserModel)null);
-            _userManager.Setup(c => c.RegisterUser(It.IsAny<RegistrationModel>())).ReturnsAsync(ErrorDictionary.Ok);
+            _userManager.Setup(c => c.GetUserByEmail(model.Email)).ReturnsAsync((UserModel)null).Verifiable();
+            _userManager.Setup(c => c.RegisterUser(model)).ReturnsAsync(ErrorDictionary.Ok).Verifiable();
 
             var response = await _controller.Register(model) as OkResult;
 
+            _userManager.Verify(c => c.GetUserByEmail(model.Email), Times.Once);
+            _userManager.Verify(c => c.RegisterUser(model), Times.Once);
             Assert.True(response.StatusCode == (int)HttpStatusCode.OK);
         }
 
@@ -60,10 +59,13 @@ namespace ParrotWings.Tests.Controllers
         [AutoMoqData]
         public async Task Register_Already_Registered_Bad_Request(RegistrationModel model, UserModel user)
         {
-            _userManager.Setup(c => c.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(user);
+            _userManager.Setup(c => c.GetUserByEmail(model.Email)).ReturnsAsync(user).Verifiable();
+            _userManager.Setup(c => c.RegisterUser(model)).ReturnsAsync(ErrorDictionary.Ok).Verifiable();
 
             var response = await _controller.Register(model) as BadRequestObjectResult;
 
+            _userManager.Verify(c => c.GetUserByEmail(model.Email), Times.Once);
+            _userManager.Verify(c => c.RegisterUser(model), Times.Never);
             Assert.True(response.StatusCode == (int)HttpStatusCode.BadRequest);
             Assert.True(((string)response.Value).Equals(ErrorDictionary.AlreadyRegisteredUser));
         }
@@ -72,11 +74,13 @@ namespace ParrotWings.Tests.Controllers
         [AutoMoqData]
         public async Task Register_Error(RegistrationModel model)
         {
-            _userManager.Setup(c => c.GetUserByEmail(It.IsAny<string>())).ReturnsAsync((UserModel)null);
-            _userManager.Setup(c => c.RegisterUser(It.IsAny<RegistrationModel>())).ReturnsAsync(ErrorDictionary.Error);
+            _userManager.Setup(c => c.GetUserByEmail(model.Email)).ReturnsAsync((UserModel)null).Verifiable();
+            _userManager.Setup(c => c.RegisterUser(model)).ReturnsAsync(ErrorDictionary.Error).Verifiable();
 
             var response = await _controller.Register(model) as BadRequestObjectResult;
 
+            _userManager.Verify(c => c.GetUserByEmail(model.Email), Times.Once);
+            _userManager.Verify(c => c.RegisterUser(model), Times.Once);
             Assert.True(response.StatusCode == (int)HttpStatusCode.BadRequest);
             Assert.True(((string)response.Value).Equals(ErrorDictionary.Error));
         }
@@ -85,10 +89,11 @@ namespace ParrotWings.Tests.Controllers
         [AutoMoqData]
         public async Task Login_Success(LoginModel model, UserInfoModel userInfoModel)
         {
-            _userManager.Setup(c => c.Login(model)).ReturnsAsync(userInfoModel);
+            _userManager.Setup(c => c.Login(model)).ReturnsAsync(userInfoModel).Verifiable();
 
             var response = await _controller.Login(model) as OkResult;
 
+            _userManager.Verify(c => c.Login(model), Times.Once);
             Assert.True(response.StatusCode == (int)HttpStatusCode.OK);
         }
 
@@ -96,10 +101,11 @@ namespace ParrotWings.Tests.Controllers
         [AutoMoqData]
         public async Task Login_Error(LoginModel model)
         {
-            _userManager.Setup(c => c.Login(model)).ReturnsAsync((UserInfoModel)null);
+            _userManager.Setup(c => c.Login(model)).ReturnsAsync((UserInfoModel)null).Verifiable();
 
             var response = await _controller.Login(model) as BadRequestObjectResult;
 
+            _userManager.Verify(c => c.Login(model), Times.Once);
             Assert.True(response.StatusCode == (int)HttpStatusCode.BadRequest);
             Assert.Equal((string)response.Value, ErrorDictionary.LoginError);
         }

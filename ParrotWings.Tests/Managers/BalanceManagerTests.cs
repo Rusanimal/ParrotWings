@@ -55,10 +55,11 @@ namespace ParrotWings.Tests.Managers
         {
             var amount = balance;
 
-            _balanceRepository.Setup(c => c.GetBalance(userId)).ReturnsAsync(balance);
+            _balanceRepository.Setup(c => c.GetBalance(userId)).ReturnsAsync(balance).Verifiable();
 
             var result = await _manager.CheckBalance(userId, amount);
 
+            _balanceRepository.Verify(c => c.GetBalance(userId), Times.Once);
             Assert.True(result == true);
         }
 
@@ -68,10 +69,11 @@ namespace ParrotWings.Tests.Managers
         {
             var amount = balance + 1;
 
-            _balanceRepository.Setup(c => c.GetBalance(userId)).ReturnsAsync(balance);
+            _balanceRepository.Setup(c => c.GetBalance(userId)).ReturnsAsync(balance).Verifiable();
 
             var result = await _manager.CheckBalance(userId, amount);
 
+            _balanceRepository.Verify(c => c.GetBalance(userId), Times.Once);
             Assert.True(result == false);
         }
     }

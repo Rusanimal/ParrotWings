@@ -47,7 +47,7 @@ namespace ParrotWings.Tests.Controllers
         [AutoMoqData]
         public async Task GetUserInfo_Success(UserInfoModel model)
         {
-            _userManager.Setup(c => c.GetUserInfo(It.IsAny<int>())).ReturnsAsync(model);
+            _userManager.Setup(c => c.GetUserInfo(0)).ReturnsAsync(model);
 
             var response = await _controller.GetUserInfo() as OkObjectResult;
             var received = response.Value.AsSource().OfLikeness<UserInfoModel>();
@@ -59,10 +59,11 @@ namespace ParrotWings.Tests.Controllers
         [Fact]
         public async Task GetUserInfo_Error()
         {
-            _userManager.Setup(c => c.GetUserInfo(It.IsAny<int>())).ReturnsAsync((UserInfoModel)null);
+            _userManager.Setup(c => c.GetUserInfo(It.IsAny<int>())).ReturnsAsync((UserInfoModel)null).Verifiable();
 
             var response = await _controller.GetUserInfo() as BadRequestObjectResult;
 
+            _userManager.Verify(c => c.GetUserInfo(It.IsAny<int>()), Times.Once);
             Assert.True(response.StatusCode == (int)HttpStatusCode.BadRequest);
             Assert.Equal((string)response.Value, ErrorDictionary.Error);
         }

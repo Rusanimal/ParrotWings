@@ -35,21 +35,26 @@ namespace ParrotWings.Tests.Managers
         [Fact]
         public async Task RegisterUser_Success()
         {
-            _userRepository.Setup(c => c.AddUser(It.IsAny<User>())).ReturnsAsync(1);
-            _balanceRepository.Setup(c => c.AddBalanceEntry(It.IsAny<Balance>())).ReturnsAsync(It.IsAny<int>());
+            _userRepository.Setup(c => c.AddUser(It.IsAny<User>())).ReturnsAsync(1).Verifiable();
+            _balanceRepository.Setup(c => c.AddBalanceEntry(It.IsAny<Balance>())).ReturnsAsync(It.IsAny<int>()).Verifiable();
 
             var result = await _manager.RegisterUser(It.IsAny<RegistrationModel>());
 
+            _userRepository.Verify(c => c.AddUser(It.IsAny<User>()), Times.Once);
+            _balanceRepository.Verify(c => c.AddBalanceEntry(It.IsAny<Balance>()), Times.Once);
             Assert.True(result == ErrorDictionary.Ok);
         }
 
         [Fact]
         public async Task RegisterUser_Error()
         {
-            _userRepository.Setup(c => c.AddUser(It.IsAny<User>())).ReturnsAsync(0);
+            _userRepository.Setup(c => c.AddUser(It.IsAny<User>())).ReturnsAsync(0).Verifiable();
+            _balanceRepository.Setup(c => c.AddBalanceEntry(It.IsAny<Balance>())).ReturnsAsync(It.IsAny<int>()).Verifiable();
 
             var result = await _manager.RegisterUser(It.IsAny<RegistrationModel>());
 
+            _userRepository.Verify(c => c.AddUser(It.IsAny<User>()), Times.Once);
+            _balanceRepository.Verify(c => c.AddBalanceEntry(It.IsAny<Balance>()), Times.Never);
             Assert.True(result == ErrorDictionary.Error);
         }
 
@@ -57,10 +62,11 @@ namespace ParrotWings.Tests.Managers
         [AutoMoqData]
         public async Task Login_No_User_Error(LoginModel model)
         {
-            _userRepository.Setup(c => c.GetUserByEmail(It.IsAny<string>())).ReturnsAsync((User)null);
+            _userRepository.Setup(c => c.GetUserByEmail(model.Email)).ReturnsAsync((User)null).Verifiable();
 
             var result = await _manager.Login(model);
 
+            _userRepository.Verify(c => c.GetUserByEmail(model.Email), Times.Once);
             Assert.True(result == null);
         }
 
@@ -68,10 +74,11 @@ namespace ParrotWings.Tests.Managers
         [AutoMoqData]
         public async Task Login_Wrong_Pass_Error(LoginModel model, User user)
         {
-            _userRepository.Setup(c => c.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(user);
+            _userRepository.Setup(c => c.GetUserByEmail(model.Email)).ReturnsAsync(user).Verifiable();
 
             var result = await _manager.Login(model);
 
+            _userRepository.Verify(c => c.GetUserByEmail(model.Email), Times.Once);
             Assert.True(result == null);
         }
 
@@ -80,7 +87,7 @@ namespace ParrotWings.Tests.Managers
         public async Task Login_Success(LoginModel model, User user)
         {
             user.PasswordHash = PasswordHashHelper.HashPassword(model.Password);
-            _userRepository.Setup(c => c.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(user);
+            _userRepository.Setup(c => c.GetUserByEmail(model.Email)).ReturnsAsync(user);
 
             var result = await _manager.Login(model);
 
@@ -93,7 +100,7 @@ namespace ParrotWings.Tests.Managers
         public async Task GetUserById_Success(User user)
         {
             var model = new UserModel() { Name = user.Name, Id = user.Id };
-            _userRepository.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(user);
+            _userRepository.Setup(c => c.GetUserById(user.Id)).ReturnsAsync(user);
 
             var result = await _manager.GetUserById(user.Id);
 
@@ -106,7 +113,7 @@ namespace ParrotWings.Tests.Managers
         public async Task GetUserByEmail_Success(User user)
         {
             var model = new UserModel() { Name = user.Name, Id = user.Id };
-            _userRepository.Setup(c => c.GetUserByEmail(It.IsAny<string>())).ReturnsAsync(user);
+            _userRepository.Setup(c => c.GetUserByEmail(user.Email)).ReturnsAsync(user);
 
             var result = await _manager.GetUserByEmail(user.Email);
 
@@ -130,10 +137,10 @@ namespace ParrotWings.Tests.Managers
         [AutoMoqData]
         public async Task GetUserInfo_Success(User user, decimal balance)
         {
-            _userRepository.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync(user);
-            _balanceRepository.Setup(c => c.GetBalance(It.IsAny<int>())).ReturnsAsync(balance);
+            _userRepository.Setup(c => c.GetUserById(user.Id)).ReturnsAsync(user);
+            _balanceRepository.Setup(c => c.GetBalance(user.Id)).ReturnsAsync(balance);
 
-            var result = await _manager.GetUserInfo(It.IsAny<int>());
+            var result = await _manager.GetUserInfo(user.Id);
 
             Assert.True(result.Balance == balance);
             Assert.True(result.Id == user.Id);
@@ -143,11 +150,13 @@ namespace ParrotWings.Tests.Managers
         [Fact]
         public async Task GetUserInfo_Error()
         {
-            _userRepository.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync((User)null);
-            _balanceRepository.Setup(c => c.GetBalance(It.IsAny<int>())).ReturnsAsync(It.IsAny<decimal>());
+            _userRepository.Setup(c => c.GetUserById(It.IsAny<int>())).ReturnsAsync((User)null).Verifiable();
+            _balanceRepository.Setup(c => c.GetBalance(It.IsAny<int>())).ReturnsAsync(It.IsAny<decimal>()).Verifiable();
 
             var result = await _manager.GetUserInfo(It.IsAny<int>());
 
+            _userRepository.Verify(c => c.GetUserById(It.IsAny<int>()), Times.Once);
+            _balanceRepository.Verify(c => c.GetBalance(It.IsAny<int>()), Times.Once);
             Assert.True(result == null);
         }
     }

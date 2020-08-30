@@ -40,12 +40,15 @@ namespace ParrotWings.Tests.Managers
         public async Task CreateTransaction_Success(CreateTransactionModel model, Balance balance1, Balance balance2)
         {
             var list = new List<Balance>() { balance1, balance2 };
-            _balanceRepository.Setup(c => c.GetBalance(It.IsAny<int>())).ReturnsAsync((decimal)(model.Amount +1));
-            _transactionRepository.Setup(c => c.AddTransaction(It.IsAny<TransferTransaction>())).ReturnsAsync(1);
-            _balanceRepository.Setup(c => c.AddBalanceEntries(It.IsAny<List<Balance>>())).ReturnsAsync(list);
+            _balanceRepository.Setup(c => c.GetBalance(0)).ReturnsAsync((decimal)(model.Amount +1)).Verifiable();
+            _transactionRepository.Setup(c => c.AddTransaction(It.IsAny<TransferTransaction>())).ReturnsAsync(1).Verifiable();
+            _balanceRepository.Setup(c => c.AddBalanceEntries(It.IsAny<List<Balance>>())).ReturnsAsync(list).Verifiable();
 
-            var result = await _manager.CreateTransaction(It.IsAny<int>(), model);
+            var result = await _manager.CreateTransaction(0, model);
 
+            _balanceRepository.Verify(c => c.GetBalance(0), Times.Once);
+            _transactionRepository.Verify(c => c.AddTransaction(It.IsAny<TransferTransaction>()), Times.Once);
+            _balanceRepository.Verify(c => c.AddBalanceEntries(It.IsAny<List<Balance>>()), Times.Once);
             Assert.True(result == ErrorDictionary.Ok);
         }
 
@@ -53,10 +56,15 @@ namespace ParrotWings.Tests.Managers
         [AutoMoqData]
         public async Task CreateTransaction_Smaller_Balance_Error(CreateTransactionModel model)
         {
-            _balanceRepository.Setup(c => c.GetBalance(It.IsAny<int>())).ReturnsAsync((decimal)(model.Amount - 1));
+            _balanceRepository.Setup(c => c.GetBalance(0)).ReturnsAsync((decimal)(model.Amount - 1)).Verifiable();
+            _transactionRepository.Setup(c => c.AddTransaction(It.IsAny<TransferTransaction>())).ReturnsAsync(1).Verifiable();
+            _balanceRepository.Setup(c => c.AddBalanceEntries(It.IsAny<List<Balance>>())).ReturnsAsync(It.IsAny<List<Balance>>).Verifiable();
 
-            var result = await _manager.CreateTransaction(It.IsAny<int>(), model);
+            var result = await _manager.CreateTransaction(0, model);
 
+            _balanceRepository.Verify(c => c.GetBalance(0), Times.Once);
+            _transactionRepository.Verify(c => c.AddTransaction(It.IsAny<TransferTransaction>()), Times.Never);
+            _balanceRepository.Verify(c => c.AddBalanceEntries(It.IsAny<List<Balance>>()), Times.Never);
             Assert.True(result == ErrorDictionary.BalanceSmallerThenAmount);
         }
 
@@ -66,13 +74,19 @@ namespace ParrotWings.Tests.Managers
         {
             balance1.Id = 0;
             var list = new List<Balance>() { balance1, balance2 };
-            _balanceRepository.Setup(c => c.GetBalance(It.IsAny<int>())).ReturnsAsync((decimal)(model.Amount + 1));
-            _transactionRepository.Setup(c => c.AddTransaction(It.IsAny<TransferTransaction>())).ReturnsAsync(1);
-            _balanceRepository.Setup(c => c.AddBalanceEntries(It.IsAny<List<Balance>>())).ReturnsAsync(list);
-            _balanceRepository.Setup(c => c.RemoveBalanceEntry(It.IsAny<Balance>())).Returns(Task.CompletedTask);
-            _transactionRepository.Setup(c => c.RemoveTransaction(1)).Returns(Task.CompletedTask);
+            _balanceRepository.Setup(c => c.GetBalance(0)).ReturnsAsync((decimal)(model.Amount + 1)).Verifiable();
+            _transactionRepository.Setup(c => c.AddTransaction(It.IsAny<TransferTransaction>())).ReturnsAsync(1).Verifiable();
+            _balanceRepository.Setup(c => c.AddBalanceEntries(It.IsAny<List<Balance>>())).ReturnsAsync(list).Verifiable();
+            _balanceRepository.Setup(c => c.RemoveBalanceEntry(It.IsAny<Balance>())).Returns(Task.CompletedTask).Verifiable();
+            _transactionRepository.Setup(c => c.RemoveTransaction(1)).Returns(Task.CompletedTask).Verifiable();
 
-            var result = await _manager.CreateTransaction(It.IsAny<int>(), model);
+            var result = await _manager.CreateTransaction(0, model);
+
+            _balanceRepository.Verify(c => c.GetBalance(0), Times.Once);
+            _transactionRepository.Verify(c => c.AddTransaction(It.IsAny<TransferTransaction>()), Times.Once);
+            _balanceRepository.Verify(c => c.AddBalanceEntries(It.IsAny<List<Balance>>()), Times.Once);
+            _balanceRepository.Verify(c => c.RemoveBalanceEntry(It.IsAny<Balance>()), Times.Once);
+            _transactionRepository.Verify(c => c.RemoveTransaction(1), Times.Once);
 
             Assert.True(result == ErrorDictionary.Error);
         }

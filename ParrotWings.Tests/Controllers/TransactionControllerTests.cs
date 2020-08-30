@@ -42,7 +42,7 @@ namespace ParrotWings.Tests.Controllers
         [AutoMoqData]
         public async Task GetTransaction_Success(CreateTransactionModel model)
         {
-            _transactionManager.Setup(c => c.GetTransitionCopy(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(model);
+            _transactionManager.Setup(c => c.GetTransitionCopy(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(model).Verifiable();
 
             var response = await _controller.GetTransaction(1) as OkObjectResult;
             var received = response.Value.AsSource().OfLikeness<CreateTransactionModel>();
@@ -55,7 +55,7 @@ namespace ParrotWings.Tests.Controllers
         [AutoMoqData]
         public async Task CreateTransaction_Success(CreateTransactionModel model)
         {
-            _transactionManager.Setup(c => c.CreateTransaction(It.IsAny<int>(), It.IsAny<CreateTransactionModel>())).ReturnsAsync(ErrorDictionary.Ok);
+            _transactionManager.Setup(c => c.CreateTransaction(It.IsAny<int>(), model)).ReturnsAsync(ErrorDictionary.Ok);
 
             var response = await _controller.CreateTransaction(model) as OkObjectResult;
 
@@ -68,9 +68,11 @@ namespace ParrotWings.Tests.Controllers
         public async Task CreateTransaction_Amount_Negative_Error(CreateTransactionModel model)
         {
             model.Amount = -1;
+            _transactionManager.Setup(c => c.CreateTransaction(It.IsAny<int>(), model)).ReturnsAsync(ErrorDictionary.Ok).Verifiable();
 
             var response = await _controller.CreateTransaction(model) as BadRequestObjectResult;
 
+            _transactionManager.Verify(c => c.CreateTransaction(It.IsAny<int>(), model), Times.Never);
             Assert.True(response.StatusCode == (int)HttpStatusCode.BadRequest);
             Assert.Equal((string)response.Value, ErrorDictionary.AmountMustByPositive);
         }
@@ -79,7 +81,7 @@ namespace ParrotWings.Tests.Controllers
         [AutoMoqData]
         public async Task CreateTransaction_Error(CreateTransactionModel model)
         {
-            _transactionManager.Setup(c => c.CreateTransaction(It.IsAny<int>(), It.IsAny<CreateTransactionModel>())).ReturnsAsync(ErrorDictionary.Error);
+            _transactionManager.Setup(c => c.CreateTransaction(It.IsAny<int>(), model)).ReturnsAsync(ErrorDictionary.Error);
 
             var response = await _controller.CreateTransaction(model) as BadRequestObjectResult;
 
