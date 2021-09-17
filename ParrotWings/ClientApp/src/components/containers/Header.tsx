@@ -1,7 +1,7 @@
 ﻿import * as React from 'react';
 import { createStyles, makeStyles, Theme, AppBar, Toolbar, Typography, Button, Container, Grid } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
-import { logout } from '../../store/account/actionCreators';
+import { logoutAsync } from '../../store/account/reducers';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -16,7 +16,7 @@ function Header() {
     const classes = useStyles();
 
     const signOut = () => {
-        dispatch(logout());
+        dispatch(logoutAsync());
     }
 
     return (

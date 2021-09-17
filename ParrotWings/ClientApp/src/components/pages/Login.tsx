@@ -3,7 +3,7 @@ import { Grid, TextField, Typography, Button, Link, makeStyles, Theme, createSty
 import Alert from '@material-ui/lab/Alert';
 import { Link as RouterLink } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
-import { clearError, login } from '../../store/account/actionCreators';
+import { clearError, loginAsync } from '../../store/account/reducers';
 import { useSelector, useDispatch } from 'react-redux';
 import { ApplicationState } from '../../store';
 
@@ -27,7 +27,7 @@ function Login() {
     React.useEffect(() => () => { dispatch(clearError()) }, [dispatch]);
 
     const onSubmit = (form: LoginForm) => {
-        dispatch(login(form));
+        dispatch(loginAsync(form));
     }
 
     return (<React.Fragment>

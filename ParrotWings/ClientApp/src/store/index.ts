@@ -1,9 +1,9 @@
 import { AccountState } from './account/types';
-import { accountReducer } from './account/reducers';
-import { userReducer } from './user/reducers';
+import accountReducer from './account/reducers';
+import userReducer from './user/reducers';
 import { UserState } from './user/types';
 import { TransactionState } from './transaction/types';
-import { transactionReducer } from './transaction/reducers';
+import transactionReducer from './transaction/reducers';
 
 // The top-level state object
 export interface ApplicationState {
@@ -20,9 +20,3 @@ export const reducers = {
     transaction: transactionReducer,
     user: userReducer
 };
-
-// This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are
-// correctly typed to match your store.
-export interface AppThunkAction<TAction> {
-    (dispatch: (action: TAction) => void, getState: () => ApplicationState): void;
-}

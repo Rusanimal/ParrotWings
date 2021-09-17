@@ -5,7 +5,7 @@ import CallReceived from '@material-ui/icons/CallReceived';
 import { TransactionModel } from '../../../store/user/types';
 import { green, red } from '@material-ui/core/colors';
 import { useDispatch } from 'react-redux';
-import { getTransaction } from '../../../store/transaction/actionCreators';
+import { getTransactionAsync } from '../../../store/transaction/reducers';
 import { push } from 'connected-react-router';
 
 type OwnProps = {
@@ -23,7 +23,7 @@ function TransactionItem(props: OwnProps) {
     const color = item.amount > 0 ? green[500] : red[500];
 
     const handleClick = () => {
-        dispatch(getTransaction(item.transitionId));
+        dispatch(getTransactionAsync(item.transitionId));
         dispatch(push("/CreateTransaction"));
     }
 

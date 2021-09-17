@@ -3,7 +3,7 @@ import { List, ListItem, Divider, ListItemIcon, ListItemText } from '@material-u
 import PersonIcon from '@material-ui/icons/Person';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserInfo } from '../../store/user/actionCreators';
+import { getUserInfoAsync } from '../../store/user/reducers';
 import { ApplicationState } from '../../store';
 import { NavLink } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ function LeftMenu() {
     });
 
     React.useEffect(() => {
-        dispatch(getUserInfo());
+        dispatch(getUserInfoAsync());
     }, [dispatch]);
 
 

@@ -1,6 +1,7 @@
-﻿import { Action, Reducer } from 'redux';
-import { UserAction } from './actions';
-import { UserState, UserActionTypes } from "./types";
+﻿import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { serverApi } from '../../utils/serverApi';
+import { logout } from '../account/reducers';
+import { UserState, UserInfoModel, TransactionModel } from "./types";
 
 
 const initialState: UserState = {
@@ -11,28 +12,59 @@ const initialState: UserState = {
     userList: []
 }
 
-const reducer: Reducer<UserState> = ((state = initialState, incomingAction: Action): UserState => {
-    state = state || initialState;
+export const getUserInfoAsync = createAsyncThunk('user/getUserInfo', async () => {
+    const response = await serverApi.get<UserInfoModel>(`User/GetUserInfo`);
+    return response.data;
+});
 
-    const action = incomingAction as UserAction;
-    switch (action.type) {
-        case UserActionTypes.GET_USER_INFO_SUCCESS:
-            return { ...state, balance: action.data.balance, name: action.data.name, isLoading: false };
-        case UserActionTypes.GET_USER_INFO_FAIL:
-            return { ...state, balance: 0, name: '', isLoading: false };
-        case UserActionTypes.REQUEST_START:
-            return { ...state, isLoading: true };
-        case UserActionTypes.GET_BALANCE_SUCCESS:
-            return { ...state, balance: action.data };
-        case UserActionTypes.GET_BALANCE_FAIL:
-            return { ...state, balance: 0 };
-        case UserActionTypes.GET_BALANCE_HISTORY_SUCCESS:
-            return { ...state, transactionList: action.data };
-        case UserActionTypes.GET_BALANCE_HISTORY_FAIL:
-            return { ...state, transactionList: [] };
-        default:
-            return state;
+export const getBalanceAsync = createAsyncThunk('user/getBalace', async () => {
+    const response = await serverApi.get<number>(`User/GetBalance`);
+    return response.data;
+});
+
+export const getBalanceHistoryAsync = createAsyncThunk('user/getBalanceHistoryAsync', async () => {
+    const response = await serverApi.get<Array<TransactionModel>>(`User/GetBalanceHistory`);
+    return response.data;
+});
+
+export const userSlice = createSlice({
+    name: 'User',
+    initialState,
+    reducers: {},
+    extraReducers(builder) {
+        builder
+            .addCase(getUserInfoAsync.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getUserInfoAsync.fulfilled, (state, action) => {
+                state.name = action.payload.name;
+                state.balance = action.payload.balance;
+                state.isLoading = false;
+            })
+            .addCase(getUserInfoAsync.rejected, (state, action) => {
+                if (action.error.code === '401') logout();
+                state.name = '';
+                state.balance = 0;
+                state.isLoading = false;
+            })
+            .addCase(getBalanceAsync.fulfilled, (state, action) => {
+                state.balance = action.payload;
+            })
+            .addCase(getBalanceAsync.rejected, (state, action) => {
+                state.balance = 0;
+            })
+            .addCase(getBalanceHistoryAsync.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getBalanceHistoryAsync.fulfilled, (state, action) => {
+                state.transactionList = action.payload;
+                state.isLoading = false;
+            })
+            .addCase(getBalanceHistoryAsync.rejected, (state, action) => {
+                state.transactionList = [];
+                state.isLoading = false;
+            })
     }
 });
 
-export { reducer as userReducer }
+export default userSlice.reducer;

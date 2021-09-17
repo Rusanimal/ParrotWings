@@ -1,6 +1,6 @@
-﻿import { Action, Reducer } from 'redux';
-import { AccountAction } from './actions';
-import { AccountState, AccountActionTypes } from "./types";
+﻿import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { serverApi } from "../../utils/serverApi";
+import { AccountState, LoginModel, RegisterModel } from "./types";
 
 
 const initialState: AccountState = {
@@ -10,30 +10,73 @@ const initialState: AccountState = {
     isCreated: false
 }
 
-const reducer: Reducer<AccountState> = ((state = initialState, incomingAction: Action): AccountState => {
-    state = state || initialState;
+export const logoutAsync = createAsyncThunk('@@account/logout', async () => {
+    const response = await serverApi.get<string>(`Account/Logout`);
+    return response.data;
+});
 
-    const action = incomingAction as AccountAction;
-    switch (action.type) {
-        case AccountActionTypes.LOGIN_SUCCESS:
-            return { ...state, isAuthenticated: true, isLoading: false };
-        case AccountActionTypes.LOGIN_FAIL:
-            return { ...state, isAuthenticated: false, isLoading: false, error: action.error };
-        case AccountActionTypes.REGISTER_SUCCESS:
-            return { ...state, isLoading: false, isCreated: true };
-        case AccountActionTypes.REGISTER_FAIL:
-            return { ...state, isLoading: false, error: action.error };
-        case AccountActionTypes.REQUEST_START:
-            return { ...state, isLoading: true, error: '' };
-        case AccountActionTypes.CLEAR_ERROR:
-            return { ...state, error: '' };
-        case AccountActionTypes.RESET_CREATED:
-            return { ...state, isCreated: false };
-        case AccountActionTypes.LOGOUT:
-            return { ...state, isAuthenticated: false };
-        default:
-            return state;
+export const loginAsync = createAsyncThunk('@@account/login', async (model: LoginModel) => {
+    const response = await serverApi.post<string>(`Account/Login`, model);
+    return response.data;
+});
+
+export const registerAsync = createAsyncThunk('@@account/register', async (model: RegisterModel) => {
+    const response = await serverApi.post<string>(`Account/Register`, model);
+    return response.data;
+});
+
+export const accountSlice = createSlice({
+    name: "Account",
+    initialState,
+
+    reducers: {
+        clearError: state => {
+            state.error = '';
+        },
+        resetCreated: state => {
+            state.isCreated = false;
+        },
+        logout: state => {
+            state.isAuthenticated = false;
+        }
+    },
+    extraReducers(builder) {
+        builder
+            .addCase(logoutAsync.fulfilled, (state) => {
+                state.isAuthenticated = false;
+            })
+            .addCase(logoutAsync.rejected, (state, action) => {
+                state.error = action.error.message;
+            })
+            .addCase(loginAsync.pending, (state) => {
+                state.isLoading = true;
+                state.error = '';
+            })
+            .addCase(loginAsync.fulfilled, (state) => {
+                state.isAuthenticated = true;
+                state.isLoading = false;
+            })
+            .addCase(loginAsync.rejected, (state, action) => {         
+                state.error = action.error.message;
+                state.isAuthenticated = false;
+                state.isLoading = false;
+            })
+            .addCase(registerAsync.pending, (state) => {
+                state.isLoading = true;
+                state.error = '';
+            })
+            .addCase(registerAsync.fulfilled, (state) => {
+                state.isCreated = true;
+                state.isLoading = false;
+            })
+            .addCase(registerAsync.rejected, (state, action) => {
+                state.error = action.error.message;
+                state.isLoading = false;
+            })
     }
 });
 
-export { reducer as accountReducer }
+export const { clearError, resetCreated, logout } = accountSlice.actions;
+
+export default accountSlice.reducer;
+

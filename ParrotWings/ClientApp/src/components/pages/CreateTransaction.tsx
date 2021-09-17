@@ -6,7 +6,7 @@ import AmountStep from './CreateTransaction/AmountStep';
 import ConfirmStep from './CreateTransaction/ConfirmStep';
 import { Stepper, Step, StepLabel, Paper, Grid, makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
 import SuccessStep from './CreateTransaction/SuccessStep';
-import { resetState } from '../../store/transaction/actionCreators';
+import { resetState } from '../../store/transaction/reducers';
 
 function getSteps() {
     return ['Select recipient', 'Enter amount', 'Confirm transaction'];

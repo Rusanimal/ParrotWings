@@ -1,7 +1,7 @@
 ﻿import * as React from 'react';
 import { Grid, TextField, Typography, Button, Link, Theme, makeStyles, createStyles } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
-import { register, clearError } from '../../../store/account/actionCreators';
+import { registerAsync, clearError } from '../../../store/account/reducers';
 import { useForm, Controller } from 'react-hook-form';
 import Alert from '@material-ui/lab/Alert';
 import { ApplicationState } from '../../../store';
@@ -29,7 +29,7 @@ function RegisterForm() {
     React.useEffect(() => () => { dispatch(clearError()) }, [dispatch]);
 
     const onSubmit = (form: RegisterForm) => {
-        dispatch(register(form));
+        dispatch(registerAsync(form));
     }
 
     const validate = (value: string) => {

@@ -3,14 +3,14 @@ import { Grid, Box, Button } from '@material-ui/core';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { green } from '@material-ui/core/colors';
 import { useDispatch } from 'react-redux';
-import { getBalance } from '../../../store/user/actionCreators';
-import { resetState } from '../../../store/transaction/actionCreators';
+import { getBalanceAsync } from '../../../store/user/reducers';
+import { resetState } from '../../../store/transaction/reducers';
 
 function SuccessStep() {
     const dispatch = useDispatch();
 
     React.useEffect(() => {
-        dispatch(getBalance());
+        dispatch(getBalanceAsync());
     }, [dispatch]);
 
     const handleClick = () => {

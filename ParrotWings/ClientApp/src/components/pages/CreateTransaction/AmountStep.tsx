@@ -1,9 +1,8 @@
 ﻿import * as React from 'react';
 import { Button, TextField, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { nextStep, backStep, setAmount } from '../../../store/transaction/actionCreators';
+import { nextStep, backStep, setAmount, checkUserBalanceAsync } from '../../../store/transaction/reducers';
 import { ApplicationState } from '../../../store';
-import { checkUserBalance } from '../../../store/transaction/actionCreators';
 
 function AmountStep() {
     const [currentAmount, setCurrentAmount] = React.useState<number>(0);
@@ -21,7 +20,7 @@ function AmountStep() {
 
     React.useEffect(() => {
         if (currentAmount > 0) {
-            dispatch(checkUserBalance(currentAmount));
+            dispatch(checkUserBalanceAsync(currentAmount));
         }
     }, [currentAmount, dispatch]);
 

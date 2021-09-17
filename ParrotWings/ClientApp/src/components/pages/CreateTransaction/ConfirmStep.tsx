@@ -1,11 +1,10 @@
 ﻿import * as React from 'react';
 import { Button, Grid, Box, Backdrop, CircularProgress, makeStyles, Theme, createStyles } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { backStep, createTransaction, nextStep } from '../../../store/transaction/actionCreators';
+import { backStep, createTransactionAsync, nextStep, checkUserBalanceAsync } from '../../../store/transaction/reducers';
 import { ApplicationState } from '../../../store';
 import { CreateTransactionModel } from '../../../store/transaction/types';
 import Alert from '@material-ui/lab/Alert';
-import { checkUserBalance } from '../../../store/transaction/actionCreators';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -28,7 +27,7 @@ function ConfirmStep() {
 
     React.useEffect(() => {
         if (amount) {
-            dispatch(checkUserBalance(amount));
+            dispatch(checkUserBalanceAsync(amount));
         }
     }, [amount, dispatch]);
 
@@ -47,10 +46,10 @@ function ConfirmStep() {
             correspondentId: recipient?.id!,
             amount: amount!
         }
-        dispatch(createTransaction(model));
+        dispatch(createTransactionAsync(model));
     }
 
-    const errorBody = error.length > 0 && <Alert severity="error">{error}</Alert>
+    const errorBody = error && <Alert severity="error">{error}</Alert>
     const errorAmount = !isChecked && <Alert severity="error">Amount incorrect. Please change amount</Alert>
 
     return (<React.Fragment>

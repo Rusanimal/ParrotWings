@@ -5,7 +5,7 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { green } from "@material-ui/core/colors";
 import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
-import { resetCreated } from "../../../store/account/actionCreators";
+import { resetCreated } from "../../../store/account/reducers";
 
 function CompleteMessage() {
     const dispatch = useDispatch();

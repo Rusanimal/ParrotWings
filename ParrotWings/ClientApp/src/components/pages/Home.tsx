@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { List, Backdrop, CircularProgress, makeStyles, Theme, createStyles, TextField, FormControl, InputLabel, Select, MenuItem, Typography, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { getBalanceHistory } from '../../store/user/actionCreators';
+import { getBalanceHistoryAsync } from '../../store/user/reducers';
 import { ApplicationState } from '../../store';
 import TransactionItem from './Home/TransactionItem';
 import { TransactionModel, OrderFields } from '../../store/user/types';
@@ -59,7 +59,7 @@ const Home = () => {
     const isLoading = useSelector((state: ApplicationState) => state.transaction.isLoading);
 
     React.useEffect(() => {
-        dispatch(getBalanceHistory())
+        dispatch(getBalanceHistoryAsync())
     }, [dispatch]);
 
     React.useEffect(() => {

@@ -5,7 +5,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { TextField, Button, Grid } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCorrespondent, nextStep } from '../../../store/transaction/actionCreators';
+import { setCorrespondent, nextStep } from '../../../store/transaction/reducers';
 import { ApplicationState } from '../../../store';
 
 function RecipientStep() {
