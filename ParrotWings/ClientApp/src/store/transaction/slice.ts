@@ -13,21 +13,39 @@ const initialState: TransactionState = {
 }
 
 export const createTransactionAsync = createAsyncThunk('transaction/create', async (model: CreateTransactionModel, thunkApi) => {
-    const response = await serverApi.post<void>(`Transaction/CreateTransaction`, model);
-    if (response.status === 401) thunkApi.dispatch(logout);
-    return response.data;
+    try {
+        const response = await serverApi.post<void>(`Transaction/CreateTransaction`, model);
+        if (response.status === 401) thunkApi.dispatch(logout);
+        return response.data;
+    }
+    catch (err) {
+        if (err.response.status === 401) thunkApi.dispatch(logout());
+        return thunkApi.rejectWithValue(err.response.data);
+    }
 });
 
 export const getTransactionAsync = createAsyncThunk('transaction/get', async (id: number, thunkApi) => {
-    const response = await serverApi.get<CreateTransactionModel>(`Transaction/GetTransaction/` + id);
-    if (response.status === 401) thunkApi.dispatch(logout);
-    return response.data;
+    try {
+        const response = await serverApi.get<CreateTransactionModel>(`Transaction/GetTransaction/` + id);
+        if (response.status === 401) thunkApi.dispatch(logout);
+        return response.data;
+    }
+    catch (err) {
+        if (err.response.status === 401) thunkApi.dispatch(logout());
+        return thunkApi.rejectWithValue(err.response.data);
+    }
 });
 
 export const checkUserBalanceAsync = createAsyncThunk('transaction/checkUserBalance', async (amount: number, thunkApi) => {
-    const response = await serverApi.get<Boolean>('User/CheckUserBalance/' + amount);
-    if (response.status === 401) thunkApi.dispatch(logout);
-    return response.data;
+    try {
+        const response = await serverApi.get<Boolean>('User/CheckUserBalance/' + amount);
+        if (response.status === 401) thunkApi.dispatch(logout);
+        return response.data;
+    }
+    catch (err) {
+        if (err.response.status === 401) thunkApi.dispatch(logout());
+        return thunkApi.rejectWithValue(err.response.data);
+    }
 });
 
 export const transactionSlice = createSlice({

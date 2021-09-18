@@ -1,5 +1,4 @@
 ﻿import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { AxiosError } from 'axios';
 import { serverApi } from '../../utils/serverApi';
 import { logout } from '../account/slice';
 import { UserState, UserInfoModel, TransactionModel } from "./types";
@@ -13,32 +12,37 @@ const initialState: UserState = {
     userList: []
 }
 
-export const getUserInfoAsync = (dispatch) => {
-    dispatch({ type: UserActionTypes.REQUEST_START });
-    serverApi.get<UserInfoModel>(`User/GetUserInfo`)
-        .then(function (response) {
-            dispatch({ type: UserActionTypes.GET_USER_INFO_SUCCESS, data: response.data });
-        })
-        .catch(function (error: AxiosError) {
-            if (error.response && error.response.status === 401) {
-                dispatch(logout());
-            }
-            else {
-                dispatch({ type: UserActionTypes.GET_USER_INFO_FAIL });
-            }
-        });
-};
+export const getUserInfoAsync = createAsyncThunk('user/getUserInfo', async (_, thunkApi) => {
+    try {
+        const response = await serverApi.get<UserInfoModel>(`User/GetUserInfo`);
+        return response.data;
+    }
+    catch (err) {
+        if (err.response.status === 401) thunkApi.dispatch(logout());
+        return thunkApi.rejectWithValue(err.response.data);
+    }
+});
 
 export const getBalanceAsync = createAsyncThunk('user/getBalace', async (_, thunkApi) => {
-    const response = await serverApi.get<number>(`User/GetBalance`);
-    if (response.status === 401) thunkApi.dispatch(logout());
-    return response.data;
+    try {
+        const response = await serverApi.get<number>(`User/GetBalance`);
+        return response.data;
+    }
+    catch (err) {
+        if (err.response.status === 401) thunkApi.dispatch(logout());
+        return thunkApi.rejectWithValue(err.response.data);
+    }
 });
 
 export const getBalanceHistoryAsync = createAsyncThunk('user/getBalanceHistoryAsync', async (_, thunkApi) => {
-    const response = await serverApi.get<Array<TransactionModel>>(`User/GetBalanceHistory`);
-    if (response.status === 401) thunkApi.dispatch(logout());
-    return response.data;
+    try {
+        const response = await serverApi.get<Array<TransactionModel>>(`User/GetBalanceHistory`);
+        return response.data;
+    }
+    catch (err) {
+        if (err.response.status === 401) thunkApi.dispatch(logout());
+        return thunkApi.rejectWithValue(err.response.data);
+    }
 });
 
 export const userSlice = createSlice({
@@ -51,8 +55,8 @@ export const userSlice = createSlice({
                 state.isLoading = true;
             })
             .addCase(getUserInfoAsync.fulfilled, (state, action) => {
-                state.name = action.payload.name;
-                state.balance = action.payload.balance;
+                state.name = action.payload!.name;
+                state.balance = action.payload!.balance;
                 state.isLoading = false;
             })
 
