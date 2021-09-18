@@ -2,8 +2,7 @@ import * as React from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import { Grid, Paper, createStyles, Theme, makeStyles, Backdrop, CircularProgress } from '@material-ui/core';
-import { ApplicationState } from '../../store';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '../../hooks';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,13 +21,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Layout(props: { children?: React.ReactNode }) {
     const classes = useStyles();
-    const isLoading = useSelector((state: ApplicationState) => state.account.isLoading);
+    const isLoading = useAppSelector(state => state.account.isLoading);
 
     return (
         <React.Fragment>
             <CssBaseline />
             <Container maxWidth="sm">
-                <Grid container className={classes.root} direction="column" justify="center">
+                <Grid container className={classes.root} direction="column" justifyContent="center">
                     <Grid item>
                         <Paper className={classes.paper}>
                             <Grid container direction="column" style={{ height: '100%' }}>

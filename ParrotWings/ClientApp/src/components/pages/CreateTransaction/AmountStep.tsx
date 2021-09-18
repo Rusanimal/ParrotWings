@@ -1,16 +1,19 @@
 ﻿import * as React from 'react';
 import { Button, TextField, Grid } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import { nextStep, backStep, setAmount, checkUserBalanceAsync } from '../../../store/transaction/reducers';
-import { ApplicationState } from '../../../store';
+import { nextStep, backStep, setAmount, checkUserBalanceAsync } from '../../../store/transaction/slice';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 
 function AmountStep() {
     const [currentAmount, setCurrentAmount] = React.useState<number>(0);
     const [error, setError] = React.useState<string>('');
     const [disabled, setDisabled] = React.useState<boolean>(true);
-    const dispatch = useDispatch();
-    const amount = useSelector((state: ApplicationState) => state.transaction.amount);
-    const isChecked = useSelector((state: ApplicationState) => state.transaction.isBalanceOk);
+    const dispatch = useAppDispatch();
+    const { amount, isChecked } = useAppSelector(state => {
+        return {
+            amount: state.transaction.amount,
+            isChecked: state.transaction.isBalanceOk
+        }
+    });
 
     React.useEffect(() => {
         if (amount) {
@@ -54,7 +57,7 @@ function AmountStep() {
 
     return (<React.Fragment>
         <TextField variant="outlined" label="Enter amount" type="number" onChange={handleChange} value={currentAmount} error={disabled && error.length > 0} helperText={error} />
-        <Grid container justify="space-between">
+        <Grid container justifyContent="space-between">
             <Button variant="contained" onClick={handleClickBack}>Back</Button>
             <Button color="primary" variant="contained" onClick={handleClickNext} disabled={disabled}>Next</Button>
         </Grid>

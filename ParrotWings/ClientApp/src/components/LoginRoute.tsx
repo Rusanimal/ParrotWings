@@ -1,14 +1,12 @@
 ﻿import * as React from 'react';
 import { Redirect, Route, RouteProps, useLocation } from 'react-router';
-import { useSelector } from 'react-redux';
-import { ApplicationState } from '../store';
 import MainLayout from './containers/MainLayout';
 import Layout from './containers/Layout';
+import { useAppSelector } from '../hooks';
 
 export const LoginRoute: React.FC<RouteProps> = props => {
     const currentLocation = useLocation();
-    const selectIsAuthenticated = (state: ApplicationState) => state.account.isAuthenticated;
-    const isAuthenticated = useSelector(selectIsAuthenticated);
+    const isAuthenticated = useAppSelector(state =>state.account.isAuthenticated);
 
     let redirectPath = currentLocation.pathname;
     if (isAuthenticated) {

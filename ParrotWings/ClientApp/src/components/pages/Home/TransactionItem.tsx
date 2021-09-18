@@ -4,9 +4,9 @@ import CallMadeIcon from '@material-ui/icons/CallMade';
 import CallReceived from '@material-ui/icons/CallReceived';
 import { TransactionModel } from '../../../store/user/types';
 import { green, red } from '@material-ui/core/colors';
-import { useDispatch } from 'react-redux';
-import { getTransactionAsync } from '../../../store/transaction/reducers';
+import { getTransactionAsync } from '../../../store/transaction/slice';
 import { push } from 'connected-react-router';
+import { useAppDispatch } from '../../../hooks';
 
 type OwnProps = {
     item: TransactionModel
@@ -19,7 +19,7 @@ function formatDate(date: string) {
 
 function TransactionItem(props: OwnProps) {
     const { item } = props;
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const color = item.amount > 0 ? green[500] : red[500];
 
     const handleClick = () => {

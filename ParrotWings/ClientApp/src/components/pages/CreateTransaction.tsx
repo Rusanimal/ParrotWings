@@ -1,12 +1,11 @@
 ﻿import * as React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { ApplicationState } from '../../store';
 import RecipientStep from './CreateTransaction/RecipientStep';
 import AmountStep from './CreateTransaction/AmountStep';
 import ConfirmStep from './CreateTransaction/ConfirmStep';
 import { Stepper, Step, StepLabel, Paper, Grid, makeStyles, Theme, createStyles, Typography } from '@material-ui/core';
 import SuccessStep from './CreateTransaction/SuccessStep';
-import { resetState } from '../../store/transaction/reducers';
+import { resetState } from '../../store/transaction/slice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 function getSteps() {
     return ['Select recipient', 'Enter amount', 'Confirm transaction'];
@@ -27,8 +26,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function CreateTransaction() {
     const classes = useStyles();
-    const step = useSelector((state: ApplicationState) => state.transaction.step);
-    const dispatch = useDispatch();
+    const step = useAppSelector(state => state.transaction.step);
+    const dispatch = useAppDispatch();
     const steps = getSteps();
 
     React.useEffect(() => () => {

@@ -2,12 +2,12 @@
 import { Grid, Box, Button } from '@material-ui/core';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { green } from '@material-ui/core/colors';
-import { useDispatch } from 'react-redux';
-import { getBalanceAsync } from '../../../store/user/reducers';
-import { resetState } from '../../../store/transaction/reducers';
+import { getBalanceAsync } from '../../../store/user/slice';
+import { resetState } from '../../../store/transaction/slice';
+import { useAppDispatch } from '../../../hooks';
 
 function SuccessStep() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     React.useEffect(() => {
         dispatch(getBalanceAsync());
@@ -18,7 +18,7 @@ function SuccessStep() {
     }
 
     return (<React.Fragment>
-        <Grid container justify="center">
+        <Grid container justifyContent="center">
             <CheckCircleOutlineIcon style={{ fontSize: 80, color: green[500] }} />
         </Grid>
         <Box textAlign="center" fontSize="h4.fontSize">Transaction succesfull!</Box>

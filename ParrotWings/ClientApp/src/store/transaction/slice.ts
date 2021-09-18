@@ -1,6 +1,7 @@
 ﻿import { TransactionState, CreateTransactionModel } from "./types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { serverApi } from "../../utils/serverApi";
+import { logout } from "../account/slice";
 
 const initialState: TransactionState = {
     isLoading: false,
@@ -11,18 +12,21 @@ const initialState: TransactionState = {
     isBalanceOk: false
 }
 
-export const createTransactionAsync = createAsyncThunk('transaction/create', async (model: CreateTransactionModel) => {
+export const createTransactionAsync = createAsyncThunk('transaction/create', async (model: CreateTransactionModel, thunkApi) => {
     const response = await serverApi.post<void>(`Transaction/CreateTransaction`, model);
+    if (response.status === 401) thunkApi.dispatch(logout);
     return response.data;
 });
 
-export const getTransactionAsync = createAsyncThunk('transaction/get', async (id: number) => {
+export const getTransactionAsync = createAsyncThunk('transaction/get', async (id: number, thunkApi) => {
     const response = await serverApi.get<CreateTransactionModel>(`Transaction/GetTransaction/` + id);
+    if (response.status === 401) thunkApi.dispatch(logout);
     return response.data;
 });
 
-export const checkUserBalanceAsync = createAsyncThunk('transaction/checkUserBalance', async (amount: number) => {
-    const response = await serverApi.get<boolean>('User/CheckUserBalance/' + amount);
+export const checkUserBalanceAsync = createAsyncThunk('transaction/checkUserBalance', async (amount: number, thunkApi) => {
+    const response = await serverApi.get<Boolean>('User/CheckUserBalance/' + amount);
+    if (response.status === 401) thunkApi.dispatch(logout);
     return response.data;
 });
 
@@ -30,9 +34,7 @@ export const transactionSlice = createSlice({
     name: 'Transaction',
     initialState,
     reducers: {
-        resetState: state => {
-            state = initialState;
-        },
+        resetState: state => initialState,
         backStep: state => {
             state.step -= 1;
         },

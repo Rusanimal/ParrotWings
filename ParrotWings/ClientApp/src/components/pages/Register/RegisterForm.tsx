@@ -1,11 +1,10 @@
 ﻿import * as React from 'react';
 import { Grid, TextField, Typography, Button, Link, Theme, makeStyles, createStyles } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
-import { registerAsync, clearError } from '../../../store/account/reducers';
+import { registerAsync, clearError } from '../../../store/account/slice';
 import { useForm, Controller } from 'react-hook-form';
 import Alert from '@material-ui/lab/Alert';
-import { ApplicationState } from '../../../store';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 
 type RegisterForm = {
     confirmPassword: string;
@@ -22,8 +21,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function RegisterForm() {
     const classes = useStyles();
-    const error = useSelector((state: ApplicationState) => state.account.error);
-    const dispatch = useDispatch();
+    const error = useAppSelector(state => state.account.error);
+    const dispatch = useAppDispatch();
     const { control, handleSubmit, errors, getValues } = useForm<RegisterForm>();
 
     React.useEffect(() => () => { dispatch(clearError()) }, [dispatch]);
@@ -41,7 +40,7 @@ function RegisterForm() {
             <Typography variant="h2" align="center">Register</Typography>
         </Grid>
         <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid style={{ flexGrow: 2 }} container direction="column" justify="space-between">
+            <Grid style={{ flexGrow: 2 }} container direction="column" justifyContent="space-between">
                 <Controller
                     className={classes.margins}
                     as={TextField}

@@ -2,15 +2,14 @@
 import { List, ListItem, Divider, ListItemIcon, ListItemText } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserInfoAsync } from '../../store/user/reducers';
-import { ApplicationState } from '../../store';
+import { getUserInfoAsync } from '../../store/user/slice';
 import { NavLink } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 
 function LeftMenu() {
-    const dispatch = useDispatch();
-    const { balance, name } = useSelector((state: ApplicationState) => {
+    const dispatch = useAppDispatch();
+    const { balance, name } = useAppSelector(state => {
         return {
             name: state.user.name,
             balance: state.user.balance

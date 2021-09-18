@@ -1,10 +1,9 @@
 ﻿import * as React from 'react';
 import { Button, Grid, Box, Backdrop, CircularProgress, makeStyles, Theme, createStyles } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import { backStep, createTransactionAsync, nextStep, checkUserBalanceAsync } from '../../../store/transaction/reducers';
-import { ApplicationState } from '../../../store';
+import { backStep, createTransactionAsync, nextStep, checkUserBalanceAsync } from '../../../store/transaction/slice';
 import { CreateTransactionModel } from '../../../store/transaction/types';
 import Alert from '@material-ui/lab/Alert';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,13 +16,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function ConfirmStep() {
     const classes = useStyles();
-    const dispatch = useDispatch();
-    const recipient = useSelector((state: ApplicationState) => state.transaction.correspondent);
-    const amount = useSelector((state: ApplicationState) => state.transaction.amount);
-    const isCreated = useSelector((state: ApplicationState) => state.transaction.isCreated);
-    const error = useSelector((state: ApplicationState) => state.transaction.error);
-    const isLoading = useSelector((state: ApplicationState) => state.transaction.isLoading);
-    const isChecked = useSelector((state: ApplicationState) => state.transaction.isBalanceOk);
+    const dispatch = useAppDispatch();
+    const { recipient, amount, isCreated, error, isLoading, isChecked } = useAppSelector(state => {
+        return {
+            recipient: state.transaction.correspondent,
+            amount: state.transaction.amount,
+            isCreated: state.transaction.isCreated,
+            error: state.transaction.error,
+            isLoading: state.transaction.isLoading,
+            isChecked: state.transaction.isBalanceOk
+        }
+    });
 
     React.useEffect(() => {
         if (amount) {
@@ -69,7 +72,7 @@ function ConfirmStep() {
             {errorBody}
             {errorAmount}
         </Grid>
-        <Grid container justify="space-between">
+        <Grid container justifyContent="space-between">
             <Button variant="contained" onClick={handleClickBack}>Back</Button>
             <Button color="primary" variant="contained" onClick={handleClickConfirm} disabled={!isChecked}>Confirm</Button>
         </Grid>

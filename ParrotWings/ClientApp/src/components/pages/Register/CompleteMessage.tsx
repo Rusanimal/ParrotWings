@@ -3,12 +3,12 @@ import { Link, Typography, Grid } from '@material-ui/core';
 import { Link as RouterLink } from 'react-router-dom';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { green } from "@material-ui/core/colors";
-import { useDispatch } from "react-redux";
 import { push } from "connected-react-router";
-import { resetCreated } from "../../../store/account/reducers";
+import { resetCreated } from "../../../store/account/slice";
+import { useAppDispatch } from "../../../hooks";
 
 function CompleteMessage() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     React.useEffect(() => {
         let timer = setTimeout(() => dispatch(push("/Login")), 5000);
@@ -19,7 +19,7 @@ function CompleteMessage() {
     }, [dispatch])
 
     return (<React.Fragment>
-        <Grid container justify="center">
+        <Grid container justifyContent="center">
             <CheckCircleOutlineIcon style={{ fontSize: 80, color: green[500] }} />
         </Grid>
         <Typography align="center" variant="h4">Registration succesfull!</Typography>

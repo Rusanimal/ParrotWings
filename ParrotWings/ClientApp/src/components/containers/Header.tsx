@@ -1,7 +1,7 @@
 ﻿import * as React from 'react';
 import { createStyles, makeStyles, Theme, AppBar, Toolbar, Typography, Button, Container, Grid } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-import { logoutAsync } from '../../store/account/reducers';
+import { logoutAsync } from '../../store/account/slice';
+import { useAppDispatch } from '../../hooks';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function Header() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const classes = useStyles();
 
     const signOut = () => {

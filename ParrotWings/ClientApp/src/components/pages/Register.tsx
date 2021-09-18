@@ -1,11 +1,10 @@
 ﻿import * as React from 'react';
-import { ApplicationState } from '../../store';
-import { useSelector } from 'react-redux';
 import RegisterForm from './Register/RegisterForm';
 import CompleteMessage from './Register/CompleteMessage';
+import { useAppSelector } from '../../hooks';
 
 function Register() {
-    const isCreated = useSelector((state: ApplicationState) => state.account.isCreated);
+    const isCreated = useAppSelector(state => state.account.isCreated);
 
     const body = isCreated ? <CompleteMessage /> : <RegisterForm />
 

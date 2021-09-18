@@ -7,7 +7,7 @@ export type TransactionState = Readonly<{
     isLoading: boolean,
     isCreated: boolean,
     step: number,
-    isBalanceOk: boolean
+    isBalanceOk: Boolean
 }>
 
 export interface CreateTransactionModel {

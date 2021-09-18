@@ -4,16 +4,15 @@ import { UserModel } from '../../../store/user/types';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { TextField, Button, Grid } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import { setCorrespondent, nextStep } from '../../../store/transaction/reducers';
-import { ApplicationState } from '../../../store';
+import { setCorrespondent, nextStep } from '../../../store/transaction/slice';
+import { useAppDispatch, useAppSelector } from '../../../hooks';
 
 function RecipientStep() {
     const [open, setOpen] = React.useState(false);
     const [options, setOptions] = React.useState<Array<UserModel>>([]);
     const loading = open && options.length === 0;
-    const dispatch = useDispatch();
-    const recipient = useSelector((state: ApplicationState) => state.transaction.correspondent);
+    const dispatch = useAppDispatch();
+    const recipient = useAppSelector(state => state.transaction.correspondent);
 
     React.useEffect(() => {
         async function getUsers() {
@@ -83,7 +82,7 @@ function RecipientStep() {
                 />
             )}
         />
-        <Grid container justify="flex-end">
+        <Grid container justifyContent="flex-end">
             <Button
                 color="primary"
                 variant="contained"

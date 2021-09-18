@@ -1,6 +1,7 @@
 ﻿import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
 import { serverApi } from '../../utils/serverApi';
-import { logout } from '../account/reducers';
+import { logout } from '../account/slice';
 import { UserState, UserInfoModel, TransactionModel } from "./types";
 
 
@@ -12,18 +13,31 @@ const initialState: UserState = {
     userList: []
 }
 
-export const getUserInfoAsync = createAsyncThunk('user/getUserInfo', async () => {
-    const response = await serverApi.get<UserInfoModel>(`User/GetUserInfo`);
-    return response.data;
-});
+export const getUserInfoAsync = (dispatch) => {
+    dispatch({ type: UserActionTypes.REQUEST_START });
+    serverApi.get<UserInfoModel>(`User/GetUserInfo`)
+        .then(function (response) {
+            dispatch({ type: UserActionTypes.GET_USER_INFO_SUCCESS, data: response.data });
+        })
+        .catch(function (error: AxiosError) {
+            if (error.response && error.response.status === 401) {
+                dispatch(logout());
+            }
+            else {
+                dispatch({ type: UserActionTypes.GET_USER_INFO_FAIL });
+            }
+        });
+};
 
-export const getBalanceAsync = createAsyncThunk('user/getBalace', async () => {
+export const getBalanceAsync = createAsyncThunk('user/getBalace', async (_, thunkApi) => {
     const response = await serverApi.get<number>(`User/GetBalance`);
+    if (response.status === 401) thunkApi.dispatch(logout());
     return response.data;
 });
 
-export const getBalanceHistoryAsync = createAsyncThunk('user/getBalanceHistoryAsync', async () => {
+export const getBalanceHistoryAsync = createAsyncThunk('user/getBalanceHistoryAsync', async (_, thunkApi) => {
     const response = await serverApi.get<Array<TransactionModel>>(`User/GetBalanceHistory`);
+    if (response.status === 401) thunkApi.dispatch(logout());
     return response.data;
 });
 
@@ -41,12 +55,7 @@ export const userSlice = createSlice({
                 state.balance = action.payload.balance;
                 state.isLoading = false;
             })
-            .addCase(getUserInfoAsync.rejected, (state, action) => {
-                if (action.error.code === '401') logout();
-                state.name = '';
-                state.balance = 0;
-                state.isLoading = false;
-            })
+
             .addCase(getBalanceAsync.fulfilled, (state, action) => {
                 state.balance = action.payload;
             })
@@ -60,7 +69,7 @@ export const userSlice = createSlice({
                 state.transactionList = action.payload;
                 state.isLoading = false;
             })
-            .addCase(getBalanceHistoryAsync.rejected, (state, action) => {
+            .addCase(getBalanceHistoryAsync.rejected, (state) => {
                 state.transactionList = [];
                 state.isLoading = false;
             })

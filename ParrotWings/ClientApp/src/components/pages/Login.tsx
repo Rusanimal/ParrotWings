@@ -3,9 +3,8 @@ import { Grid, TextField, Typography, Button, Link, makeStyles, Theme, createSty
 import Alert from '@material-ui/lab/Alert';
 import { Link as RouterLink } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
-import { clearError, loginAsync } from '../../store/account/reducers';
-import { useSelector, useDispatch } from 'react-redux';
-import { ApplicationState } from '../../store';
+import { clearError, loginAsync } from '../../store/account/slice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 type LoginForm = {
     email: string,
@@ -20,8 +19,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function Login() {
     const classes = useStyles();
-    const error = useSelector((state: ApplicationState) => state.account.error);
-    const dispatch = useDispatch();
+    const error = useAppSelector(state => state.account.error);
+    const dispatch = useAppDispatch();
     const { control, handleSubmit, errors } = useForm<LoginForm>();
 
     React.useEffect(() => () => { dispatch(clearError()) }, [dispatch]);

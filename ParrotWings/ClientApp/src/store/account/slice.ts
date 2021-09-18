@@ -10,17 +10,17 @@ const initialState: AccountState = {
     isCreated: false
 }
 
-export const logoutAsync = createAsyncThunk('@@account/logout', async () => {
+export const logoutAsync = createAsyncThunk('account/logout', async () => {
     const response = await serverApi.get<string>(`Account/Logout`);
     return response.data;
 });
 
-export const loginAsync = createAsyncThunk('@@account/login', async (model: LoginModel) => {
+export const loginAsync = createAsyncThunk('account/login', async (model: LoginModel) => {
     const response = await serverApi.post<string>(`Account/Login`, model);
     return response.data;
 });
 
-export const registerAsync = createAsyncThunk('@@account/register', async (model: RegisterModel) => {
+export const registerAsync = createAsyncThunk('account/register', async (model: RegisterModel) => {
     const response = await serverApi.post<string>(`Account/Register`, model);
     return response.data;
 });

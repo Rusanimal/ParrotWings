@@ -47,11 +47,13 @@
     <None Remove="ClientApp\src\components\pages\Register.tsx" />
     <None Remove="ClientApp\src\components\pages\Register\CompleteMessage.tsx" />
     <None Remove="ClientApp\src\components\pages\Register\RegisterForm.tsx" />
-    <None Remove="ClientApp\src\store\account\reducers.ts" />
+    <None Remove="ClientApp\src\hooks\index.tsx" />
+    <None Remove="ClientApp\src\store\account\slice.ts" />
     <None Remove="ClientApp\src\store\account\types.ts" />
-    <None Remove="ClientApp\src\store\transaction\reducers.ts" />
+    <None Remove="ClientApp\src\store\reducers.tsx" />
+    <None Remove="ClientApp\src\store\transaction\slice.ts" />
     <None Remove="ClientApp\src\store\transaction\types.ts" />
-    <None Remove="ClientApp\src\store\user\reducers.tsx" />
+    <None Remove="ClientApp\src\store\user\slice.tsx" />
     <None Remove="ClientApp\src\store\user\types.tsx" />
     <None Remove="ClientApp\src\utils\serverApi.ts" />
   </ItemGroup>
@@ -76,11 +78,13 @@
     <TypeScriptCompile Include="ClientApp\src\components\pages\Register\CompleteMessage.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\pages\Register\RegisterForm.tsx" />
     <TypeScriptCompile Include="ClientApp\src\components\ProtectedRoute.tsx" />
-    <TypeScriptCompile Include="ClientApp\src\store\account\reducers.ts" />
+    <TypeScriptCompile Include="ClientApp\src\hooks\index.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\store\account\slice.ts" />
     <TypeScriptCompile Include="ClientApp\src\store\account\types.ts" />
-    <TypeScriptCompile Include="ClientApp\src\store\transaction\reducers.ts" />
+    <TypeScriptCompile Include="ClientApp\src\store\reducers.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\store\transaction\slice.ts" />
     <TypeScriptCompile Include="ClientApp\src\store\transaction\types.ts" />
-    <TypeScriptCompile Include="ClientApp\src\store\user\reducers.tsx" />
+    <TypeScriptCompile Include="ClientApp\src\store\user\slice.tsx" />
     <TypeScriptCompile Include="ClientApp\src\store\user\types.tsx" />
     <TypeScriptCompile Include="ClientApp\src\utils\serverApi.ts" />
   </ItemGroup>

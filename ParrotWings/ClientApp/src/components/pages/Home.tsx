@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { List, Backdrop, CircularProgress, makeStyles, Theme, createStyles, TextField, FormControl, InputLabel, Select, MenuItem, Typography, Grid } from '@material-ui/core';
-import { useDispatch, useSelector } from 'react-redux';
-import { getBalanceHistoryAsync } from '../../store/user/reducers';
-import { ApplicationState } from '../../store';
 import TransactionItem from './Home/TransactionItem';
 import { TransactionModel, OrderFields } from '../../store/user/types';
+import { getBalanceHistoryAsync } from '../../store/user/slice';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -50,13 +49,17 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
 const Home = () => {
     const orders = getOrders();
     const classes = useStyles();
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
     const [text, setText] = React.useState<string>('');
     const [order, setOrder] = React.useState<number>(0);
-    const list = useSelector((state: ApplicationState) => state.user.transactionList);
+    const { list, isLoading } = useAppSelector(state => {
+        return {
+            list: state.user.transactionList,
+            isLoading: state.transaction.isLoading
+        }
+    });
     const [filteredList, setFilteredList] = React.useState<Array<TransactionModel>>([]);
     const [sortedList, setSortedList] = React.useState<Array<TransactionModel>>([]);
-    const isLoading = useSelector((state: ApplicationState) => state.transaction.isLoading);
 
     React.useEffect(() => {
         dispatch(getBalanceHistoryAsync())
@@ -124,7 +127,7 @@ const Home = () => {
 
     return (<React.Fragment>
         <Typography variant="h5" style={{ margin: '16px 0' }}>Transaction history:</Typography>
-        <Grid container justify="space-between">
+        <Grid container justifyContent="space-between">
             <FormControl variant="outlined">
                 <InputLabel id="select-outlined-label">Order</InputLabel>
                 <Select
